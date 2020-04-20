@@ -1,18 +1,13 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+berlin = Destination.create(name: "Berlin")
+kyoto = Destination.create(name: "Kyoto")
+lisbon = Destination.create(name: "Lisbon")
 
 
+kinkaku_ji = Site.create(name: "Kinkaku-Ji", destination: kyoto)
+arashiyama = Site.create(name: "Arashiyama", destination: kyoto)
 
-tokyo = Destination.create(name: "Tokyo")
-iceland = Destination.create(name: "Iceland")
+gulbenkian = Site.create(name: "Gulbenkian Museum", destination: lisbon)
+pena_palace = Site.create(name: "Pena Palace", destination: lisbon)
 
-tokyo_tower = Site.create(name: "Tokyo Tower", destination: tokyo)
-senso_ji = Site.create(name: "Senso-Ji", destination: tokyo)
-
-blue_lagoon = Site.create(name: "Blue Lagoon", destination: iceland)
-gullfoss_falls = Site.create(name: "Gullfoss Falls", destination: iceland)
+museum_island = Site.create(name: "Museum Island", destination: berlin)
+reichstag = Site.create(name: "Reichstag Building", destination: berlin)
