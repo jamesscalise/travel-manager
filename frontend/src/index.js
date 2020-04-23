@@ -1,8 +1,5 @@
 const clickedCheck = {}
 
-const javascriptFunction = function() {
-  console.log('test');
-}
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -37,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
        compress(){
-        const bin = document.getElementsByClassName('site-card')[this.id - 1]
+        const bin = document.getElementById(`site-card-${this.id}`)
         bin.innerHTML = ''
       }
 
@@ -53,18 +50,16 @@ document.addEventListener("DOMContentLoaded", () => {
             div.append(h1);
     
             const siteDiv = document.createElement('div')
-            siteDiv.setAttribute('class', 'site-card')
+            siteDiv.setAttribute('id', `site-card-${this.id}`)
             div.appendChild(siteDiv)
     
             destinationContainer.appendChild(div);
             clickedCheck[this.id] = false
             h1.addEventListener('click', (e) => {
                 if (!clickedCheck[e.target.id]){
-                    console.log(e.target.id)
                     clickedCheck[e.target.id] = !clickedCheck[e.target.id]
                     Site.displaySites(e)
                 }else{
-                    console.log(e.target.id)
                     clickedCheck[e.target.id] = !clickedCheck[e.target.id]
                     this.compress()
                 }
@@ -88,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }  
         
         static newSite(site_data){
+          console.log(site_data)
           fetch('http://localhost:3000/sites', {
             method: 'POST',
             headers:{
@@ -95,32 +91,63 @@ document.addEventListener("DOMContentLoaded", () => {
             'Accept': "application/json"
             },
             body: JSON.stringify({
-              "name": destination_data.name.value
-           //  "destination_id": destination_data.destination_id.value
+              name: site_data.name,
+              destination_id: site_data.destination_id
             })
              })
             .then(res => res.json())
             .then((obj_site) => {
-            let newSite = new Site(obj_site.data)
-            newSite.displaySite()
-            console.log(obj_site)
+             // let new_site = new Site(obj_site.data)
+            //  new_site.displaySite()
+            site_data.id = obj_site.data.id
+            let new_site = new Site(site_data)
+            new_site.displaySite()
+            console.log(site_data)
          })
         }
 
-        displaySite(){
-            let site_container = document.getElementsByClassName('site-container')[this.destination_id - 1]
-            console.log(this.destination_id)
+        static deleteSite(id, destination_id){
+          console.log(id)
+          fetch(`http://localhost:3000/sites/${id}`, {
+            method: 'DELETE'
+             })
+             
+             let site = document.getElementById(`site-${id}`)
+             site.remove();
             
+        }
+
+        displaySite(){
+            console.log(this.destination_id)
+            let site_container = document.getElementById(`site-card-${this.destination_id}`)
+            let child = site_container.querySelector('.site-container');
+
+            let div = document.createElement('div')
+            div.setAttribute('id', `site-${this.id}`)
+
+
             const list = document.createElement('li')
+
+            let btn = document.createElement('button')
+            btn.setAttribute('id', this.id)
+            btn.innerText = "Delete sight"
+
+            btn.addEventListener('click', (e) => {
+              Site.deleteSite(e.target.id, this.destination_id)
+              
+            })
                           
             list.innerText = this.name;
 
-            site_container.appendChild(list)
+            div.appendChild(list)
+            div.appendChild(btn)
+
+            child.appendChild(div)
         }
 
         static displaySites(e){
             
-          let destination = document.getElementsByClassName('site-card')[e.target.id - 1]
+          let destination = document.getElementById(`site-card-${e.target.id}`)
           const div = document.createElement('div')
           div.setAttribute('class', 'site-container')
           destination.appendChild(div)
@@ -140,28 +167,49 @@ document.addEventListener("DOMContentLoaded", () => {
                    
                   let form =
                   `
-                      <div id="new-site-container">
-                          <form id = 'new-site-form'>
+                      <div id="new-site-container-${e.target.id}">
+                          <form id = "new-site-form-${e.target.id}" style="">
                           <p>Add a sight for this destination</p>
               
                           <input type="text" name="name" value="" placeholder="Enter the sight name" class="input-text">
                           <br>
+
+                          <input type="hidden" id="destination_id" name="destination_id" value="${e.target.id}">
+
                           
-                          <input type="submit" name="submit" value="Add a new sight" class="submit" onclick="javascriptFunction();">
+                          <input type="submit" name="submit" value="Add a new sight" class="submit">
                           </form>
                         </div>
+
                       `
                       destination.insertAdjacentHTML('beforeend', form)   
+                  let new_form = document.getElementById(`new-site-container-${e.target.id}`)
+                  console.log(new_form)
+                  new_form.addEventListener('submit', event => {
+                    event.preventDefault()
+                    let data = {
+                     name: event.target.name.value,
+                     destination_id: event.target.destination_id.value
+                    }
+
+                    Site.newSite(data)
+                     
+                   })
+
                 
                  
 
         }
+
+        
 
         static getSites(){
 
         }
     }
 
+    
+   
 
     destinationForm.addEventListener('submit', event => {
      event.preventDefault()
