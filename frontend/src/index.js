@@ -1,10 +1,7 @@
 const clickedCheck = {}
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    let destinationContainer = document.getElementById('destination-collection')
     let destinationForm = document.getElementById('new-container')
 
     class Destination{
@@ -28,21 +25,18 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((obj_destination) => {
             let newDestination = new Destination(obj_destination.data)
             newDestination.displayDestination()
-            console.log(obj_destination)
          })
         }
 
 
-       compress(){
-        const bin = document.getElementById(`site-card-${this.id}`)
-        bin.innerHTML = ''
+      compress(){
+         const bin = document.getElementById(`site-card-${this.id}`)
+         bin.innerHTML = ''
       }
 
         displayDestination(){
             const div = document.createElement('div');
             div.setAttribute('class', 'destination-card')
-    
-            
     
             const h1= document.createElement('h1');
             h1.innerHTML = this.name;
@@ -52,6 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const siteDiv = document.createElement('div')
             siteDiv.setAttribute('id', `site-card-${this.id}`)
             div.appendChild(siteDiv)
+
+            let destinationContainer = document.getElementById('destination-collection')
     
             destinationContainer.appendChild(div);
             clickedCheck[this.id] = false
@@ -83,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }  
         
         static newSite(site_data){
-          console.log(site_data)
           fetch('http://localhost:3000/sites', {
             method: 'POST',
             headers:{
@@ -102,23 +97,19 @@ document.addEventListener("DOMContentLoaded", () => {
             site_data.id = obj_site.data.id
             let new_site = new Site(site_data)
             new_site.displaySite()
-            console.log(site_data)
          })
         }
 
         static deleteSite(id, destination_id){
-          console.log(id)
           fetch(`http://localhost:3000/sites/${id}`, {
             method: 'DELETE'
              })
-             
              let site = document.getElementById(`site-${id}`)
              site.remove();
             
         }
 
         displaySite(){
-            console.log(this.destination_id)
             let site_container = document.getElementById(`site-card-${this.destination_id}`)
             let child = site_container.querySelector('.site-container');
 
@@ -154,71 +145,48 @@ document.addEventListener("DOMContentLoaded", () => {
               fetch(`http://localhost:3000/destinations/${e.target.id}`)
                 .then(res => res.json())
                 .then(json =>{
-                        json.data.attributes.sites.forEach(site => {
-                        
-                            let newSite = new Site(site)
-                            newSite.displaySite()
-
-                         
-                        })
-      
-                        
+                      json.data.attributes.sites.forEach(site => {
+                      let newSite = new Site(site)
+                      newSite.displaySite() 
+                    })       
                  })
                    
-                  let form =
-                  `
-                      <div id="new-site-container-${e.target.id}">
-                          <form id = "new-site-form-${e.target.id}" style="">
-                          <p>Add a sight for this destination</p>
-              
-                          <input type="text" name="name" value="" placeholder="Enter the sight name" class="input-text">
-                          <br>
+          let form =
+          `
+              <div id="new-site-container-${e.target.id}">
+                  <form id = "new-site-form-${e.target.id}" style="">
+                  <p>Add a sight for this destination</p>
+      
+                  <input type="text" name="name" value="" placeholder="Enter the sight name" class="input-text">
+                  <br>
 
-                          <input type="hidden" id="destination_id" name="destination_id" value="${e.target.id}">
+                  <input type="hidden" id="destination_id" name="destination_id" value="${e.target.id}">
 
-                          
-                          <input type="submit" name="submit" value="Add a new sight" class="submit">
-                          </form>
-                        </div>
+                  
+                  <input type="submit" name="submit" value="Add a new sight" class="submit">
+                  </form>
+                </div>
 
-                      `
-                      destination.insertAdjacentHTML('beforeend', form)   
-                  let new_form = document.getElementById(`new-site-container-${e.target.id}`)
-                  console.log(new_form)
-                  new_form.addEventListener('submit', event => {
-                    event.preventDefault()
-                    let data = {
-                     name: event.target.name.value,
-                     destination_id: event.target.destination_id.value
-                    }
-
-                    Site.newSite(data)
-                     
-                   })
-
-                
-                 
-
+              `
+          destination.insertAdjacentHTML('beforeend', form)   
+          let new_form = document.getElementById(`new-site-container-${e.target.id}`)
+          new_form.addEventListener('submit', event => {
+            event.preventDefault()
+            let data = {
+                name: event.target.name.value,
+                destination_id: event.target.destination_id.value
+            }
+            Site.newSite(data)
+          })
         }
 
-        
-
-        static getSites(){
-
-        }
     }
 
-    
-   
-
+  
     destinationForm.addEventListener('submit', event => {
      event.preventDefault()
-     console.log(event)
       Destination.newDestination(event.target)
     })
-
-   
-
     
     Destination.getDestinations().then(json => {
         json.data.forEach(destination => {
