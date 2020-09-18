@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         static newDestination(destination_data){
-            fetch('http://localhost:3000/destinations', {
+            fetch('https://thawing-reaches-84402.herokuapp.com/destinations', {
             method: 'POST',
             headers:{
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         static getDestinations(){
-            return fetch('http://localhost:3000/destinations')
+            return fetch('https://thawing-reaches-84402.herokuapp.com/destinations')
              .then(res => res.json())
         }
     }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }  
         
         static newSite(site_data){
-          fetch('http://localhost:3000/sites', {
+          fetch('https://thawing-reaches-84402.herokuapp.com/sites', {
             method: 'POST',
             headers:{
             'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         static deleteSite(id, destination_id){
-          fetch(`http://localhost:3000/sites/${id}`, {
+          fetch(`https://thawing-reaches-84402.herokuapp.com/sites/${id}`, {
             method: 'DELETE'
              })
              let site = document.getElementById(`site-${id}`)
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const div = document.createElement('div')
           div.setAttribute('class', 'site-container')
           destination.appendChild(div)
-              fetch(`http://localhost:3000/destinations/${e.target.id}`)
+              fetch(`https://thawing-reaches-84402.herokuapp.com/destinations/${e.target.id}`)
                 .then(res => res.json())
                 .then(json =>{
                       json.data.attributes.sites.forEach(site => {
